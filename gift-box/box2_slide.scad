@@ -45,12 +45,15 @@ module lid_deco() {   // 雙色：浮雕文字 + 推動止滑紋
     for (i=[0:4]) translate([OL/2-6-i*2.4, -9, SLOT_H-0.15]) cube([1.2, 18, 0.6]);
 }
 
+// 配色（渲染用）
+C_BOX = "#e9c46a"; C_LID = "#264653"; C_TXT = "#ffffff";
+
 if (part=="base") base();
 else if (part=="lid") lid();
 else if (part=="lidtext") lid_deco();   // 白色浮雕（3MF 第二色）
-else if (part=="lidview") { color("#e9c46a") base(); translate([0,0,H-SLOT_H]) { color("#264653") lid(); color("#ffffff") lid_deco(); } }
+else if (part=="lidview") { color(C_BOX) base(); translate([0,0,H-SLOT_H]) { color(C_LID) lid(); color(C_TXT) lid_deco(); } }
 else {
-    color("#e9c46a") base();
+    color(C_BOX) base();
     translate([0,0,FLOOR-POCKET]) ruler();
-    translate([60, 0, H-SLOT_H]) { color("#264653") lid(); color("#ffffff") lid_deco(); }
+    translate([60, 0, H-SLOT_H]) { color(C_LID) lid(); color(C_TXT) lid_deco(); }
 }
