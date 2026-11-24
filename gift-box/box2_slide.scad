@@ -2,7 +2,8 @@
 include <common.scad>
 part = "scene"; // scene | base | lid
 H = 13; SLOT_H = 2.5; CL = 0.25;
-OL = IN_L + 2*WALL; OW = IN_W + 2*WALL;
+W2 = 3.2;   // 側壁加厚，鳩尾槽底部仍留 1.7mm
+OL = IN_L + 2*W2; OW = IN_W + 2*W2;
 SW_B = IN_W + 3; SW_T = IN_W + 1;   // 鳩尾槽 下寬 / 上寬
 
 module trap(x0, x1, wb, wt, h) hull() {
@@ -17,7 +18,7 @@ module base() difference() {
 }
 module lid() trap(-IN_L/2-1+CL, OL/2, SW_B-2*CL, SW_T-2*CL, SLOT_H-0.15);
 // ---- 蓋面文字（可自行修改）----
-STYLE = 1;   // 1 | 2 | 3 三種生日版面
+STYLE = 1;   // 1 | 2 | 3（定稿：1 = A 版） 三種生日版面
 CJK = "WenQuanYi Zen Hei";
 module cake2d(sc=1) scale(sc) {      // 蛋糕圖示（2D）
     translate([-6,0]) square([12,4.5]);
@@ -40,12 +41,13 @@ module lid_text2d() {
     }
 }
 module lid_deco() {   // 雙色：浮雕文字 + 推動止滑紋
-    translate([0, 0, SLOT_H-0.16]) linear_extrude(0.6) lid_text2d();
-    for (i=[0:4]) translate([OL/2-6-i*2.4, -9, SLOT_H-0.16]) cube([1.2, 18, 0.6]);
+    translate([0, 0, SLOT_H-0.15]) linear_extrude(0.6) lid_text2d();
+    for (i=[0:4]) translate([OL/2-6-i*2.4, -9, SLOT_H-0.15]) cube([1.2, 18, 0.6]);
 }
 
 if (part=="base") base();
 else if (part=="lid") lid();
+else if (part=="lidtext") lid_deco();   // 白色浮雕（3MF 第二色）
 else if (part=="lidview") { color("#e9c46a") base(); translate([0,0,H-SLOT_H]) { color("#264653") lid(); color("#ffffff") lid_deco(); } }
 else {
     color("#e9c46a") base();
