@@ -16,16 +16,39 @@ module base() difference() {
     ruler_pocket(FLOOR - POCKET);
 }
 module lid() trap(-IN_L/2-1+CL, OL/2, SW_B-2*CL, SW_T-2*CL, SLOT_H-0.15);
+// ---- 蓋面文字（可自行修改）----
+STYLE = 1;   // 1 | 2 | 3 三種生日版面
+CJK = "WenQuanYi Zen Hei";
+module cake2d(sc=1) scale(sc) {      // 蛋糕圖示（2D）
+    translate([-6,0]) square([12,4.5]);
+    translate([-4.5,4.5]) square([9,3.5]);
+    for (x=[-2.5,0,2.5]) { translate([x-0.45,8]) square([0.9,3]); translate([x,12.2]) scale([0.8,1.3]) circle(r=0.9,$fn=16); }
+}
+module lid_text2d() {
+    if (STYLE==1) {
+        translate([-8,0]) text("HAPPY BIRTHDAY", size=7, halign="center", valign="center", font="DejaVu Sans:style=Bold");
+        translate([-82,-6.5]) cake2d(0.9);
+        translate([58,-6.5]) cake2d(0.9);
+    } else if (STYLE==2) {
+        translate([-10,5]) text("生日快樂", size=10, halign="center", valign="center", font=CJK);
+        translate([-10,-8.5]) text("HAPPY BIRTHDAY", size=4.2, halign="center", valign="center", font="DejaVu Sans:style=Bold", spacing=1.25);
+        for (x=[-62,42]) translate([x,0]) rotate(18) text("\u2605", size=7, halign="center", valign="center", font="DejaVu Sans");
+    } else {
+        translate([-12,3.5]) text("Happy Birthday!", size=8.5, halign="center", valign="center", font="DejaVu Serif:style=Bold Italic");
+        translate([-12,-9]) text("~ make a wish ~", size=4, halign="center", valign="center", font="DejaVu Serif:style=Italic");
+        translate([-80,-7]) cake2d(1.05);
+    }
+}
 module lid_deco() {   // 雙色：浮雕文字 + 推動止滑紋
-    translate([-10, 0, SLOT_H-0.16]) linear_extrude(0.6)
-        text("FOR YOU ♥", size=9, halign="center", valign="center", font="DejaVu Sans:style=Bold");
+    translate([0, 0, SLOT_H-0.16]) linear_extrude(0.6) lid_text2d();
     for (i=[0:4]) translate([OL/2-6-i*2.4, -9, SLOT_H-0.16]) cube([1.2, 18, 0.6]);
 }
 
 if (part=="base") base();
 else if (part=="lid") lid();
+else if (part=="lidview") { color("#e9c46a") base(); translate([0,0,H-SLOT_H]) { color("#264653") lid(); color("#ffffff") lid_deco(); } }
 else {
     color("#e9c46a") base();
     translate([0,0,FLOOR-POCKET]) ruler();
-    translate([75, 0, H-SLOT_H]) { color("#264653") lid(); color("#ffffff") lid_deco(); }
+    translate([60, 0, H-SLOT_H]) { color("#264653") lid(); color("#ffffff") lid_deco(); }
 }
